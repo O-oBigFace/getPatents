@@ -33,7 +33,7 @@ def spider(lock, begin, end):
         with open(path_res, "w") as clear:
             pass
         sub = sheet["A%s" % str(num)].value.strip()
-
+        # 初始容错分：5分
         tolerate = 5
         for i in range(625):
             if tolerate < 1:
