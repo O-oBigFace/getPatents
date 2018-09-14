@@ -64,13 +64,14 @@ def spider(lock, begin, end):
             data = data[pos:] if pos >= 0 else ""
             try:
                 js = json.loads(data)
+            # 文件为空或者错误一共减四分
             except Exception as e:
                 js = None
-                tolerate -= 1
+                tolerate -= 2
                 print(e)
 
             if js is None:
-                tolerate -= 1
+                tolerate -= 2
                 continue
 
             publications = js['publicationResults']['publications']
@@ -84,7 +85,7 @@ def spider(lock, begin, end):
                 with open(path_res, 'a') as f_res:
                     f_res.write(restext)
 
-            # 数量过少， 减4分
+            # 数量过少， 减5分
             if len(publications) < 1:
                 tolerate -= 5
             else:
