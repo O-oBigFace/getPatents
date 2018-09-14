@@ -1,5 +1,4 @@
 import random
-from ip_pool.agents import agents
 from ip_pool import agents
 
 def rand_header():
