@@ -22,7 +22,6 @@ def spider(lock, begin, end):
     # provider = Pool()
     wb = openpyxl.load_workbook(os.path.join(os.getcwd(), "fos.xlsx"), True)
     sheet = wb.active
-    # 如果在已经爬取过，则不再爬取
     done_set = rd.get_set_done(lock, begin, end)
 
     logger.info("begin: " + str(begin) + " | end: " + str(end))
@@ -35,10 +34,8 @@ def spider(lock, begin, end):
             pass
         sub = sheet["A%s" % str(num)].value.strip()
 
-        # 错误容纳限额 -- 5分
         tolerate = 5
         for i in range(625):
-            # 换领域两个条件之一：分被扣完
             if tolerate < 1:
                 if 10 >= i:
                     rd.update_set_done(lock, num, done_set=done_set, mod=1)
@@ -48,7 +45,6 @@ def spider(lock, begin, end):
                     rd.update_set_done(lock, num, done_set=done_set, mod=5)
                 break
 
-            # 获取数据，重试10次
             rep = None
             tries = 0
             while rep is None and tries <= 10:
@@ -74,7 +70,6 @@ def spider(lock, begin, end):
             data = data[pos:] if pos >= 0 else ""
             try:
                 js = json.loads(data)
-            # 文件为空或者错误一共减五分
             except Exception as e:
                 js = None
                 tolerate -= 3
@@ -97,13 +92,11 @@ def spider(lock, begin, end):
                 with open(path_res, 'a') as f_res:
                     f_res.write(restext)
 
-            # 数量过少， 减5分
             if len(publications) < 1:
                 tolerate -= 5
             else:
                 tolerate = 5
 
-        # 换领域两个条件之二：页数超标
         else:
             lock.acquire()
             rd.update_set_done(lock, num, done_set=done_set, mod=1)
