@@ -35,11 +35,12 @@ def spider(lock, begin, end):
         for i in range(625):
             # 换领域两个条件之一：分被扣完
             if tolerate < 1:
-                lock.acquire()
-                try:
-                    rd.update_set_done(num, done_set=done_set, mod=2)
-                finally:
-                    lock.release()
+                if 10 >= i:
+                    rd.update_set_done(lock, num, done_set=done_set, mod=1)
+                elif 3 <= i < 9:
+                    rd.update_set_done(lock, num, done_set=done_set, mod=2)
+                else:
+                    rd.update_set_done(lock, num, done_set=done_set, mod=5)
                 break
 
             # 获取数据，重试10次
@@ -96,11 +97,5 @@ def spider(lock, begin, end):
         # 换领域两个条件之二：页数超标
         else:
             lock.acquire()
-            try:
-                rd.update_set_done(num, done_set=done_set, mod=1)
-            finally:
-                lock.release()
+            rd.update_set_done(lock, num, done_set=done_set, mod=1)
 
-
-# if __name__ == '__main__':
-    # spider(1, 100)
