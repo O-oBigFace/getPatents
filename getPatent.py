@@ -4,7 +4,7 @@ import json
 import random
 import configure as cg
 import openpyxl
-from ip_pool.auto_pool import get_ip
+from auto_pool import get_ip
 import Recorder as rd
 from Logger import get_logger
 import warnings
