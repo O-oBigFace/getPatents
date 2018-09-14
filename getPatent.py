@@ -4,8 +4,13 @@ import json
 import random
 import configure as cg
 import openpyxl
-from ip_pool.pool import Pool
+from ip_pool.auto_pool import get_ip
 import Recorder as rd
+from Logger import get_logger
+import warnings
+warnings.filterwarnings("ignore")
+
+logger = get_logger()
 
 
 def spider(lock, begin, end):
@@ -14,13 +19,13 @@ def spider(lock, begin, end):
         end: end num + 1
     """
     url = 'https://academic.microsoft.com/api/search/GetEntityResults'
-    provider = Pool()
+    # provider = Pool()
     wb = openpyxl.load_workbook(os.path.join(os.getcwd(), "fos.xlsx"), True)
     sheet = wb.active
     # 如果在已经爬取过，则不再爬取
-    done_set = rd.get_set_done(begin, end)
+    done_set = rd.get_set_done(lock, begin, end)
 
-    print("begin: ", begin, "| end: ", end)
+    logger.info("begin: " + str(begin) + " | end: " + str(end))
 
     for num in range(begin, end):
         if num in done_set:
@@ -50,14 +55,16 @@ def spider(lock, begin, end):
                 tries += 1
                 try:
                     rep = requests.post(url,
-                                        proxies=provider.get_ip(),
+                                        # proxies=provider.get_ip(),
+                                        proxies=get_ip(),
                                         headers=cg.rand_header(),
                                         data=cg.data_post(subject=sub, index=i),
                                         timeout=random.choice(range(80, 180)),
+                                        verify=False
                                         )
                 except Exception as e:
-                    print("No: ", num, " | tries:", tries, "| Subject: ", sub, " | Page: ", i, e)
-
+                    logger.error(
+                        "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + str(e))
             if rep is None:
                 continue
             rep.encoding = 'utf-8'
@@ -67,11 +74,12 @@ def spider(lock, begin, end):
             data = data[pos:] if pos >= 0 else ""
             try:
                 js = json.loads(data)
-            # 文件为空或者错误一共减四分
+            # 文件为空或者错误一共减五分
             except Exception as e:
                 js = None
-                tolerate -= 2
-                print(e)
+                tolerate -= 3
+                logger.error(
+                    "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + str(e))
 
             if js is None:
                 tolerate -= 2
@@ -79,7 +87,8 @@ def spider(lock, begin, end):
 
             publications = js['publicationResults']['publications']
             idx = 0
-            print("No: ", num, "| Subject: ", sub, " | Page: ", i, " | Item: ", len(publications))
+            logger.info("No: " + str(num) + " | Subject: " + sub + " | Page: " + str(i) + " | Item: " + str(len(publications)))
+
             for item in publications:
                 idx = idx + 1
                 tidx = i * 625 + idx
@@ -98,4 +107,3 @@ def spider(lock, begin, end):
         else:
             lock.acquire()
             rd.update_set_done(lock, num, done_set=done_set, mod=1)
-

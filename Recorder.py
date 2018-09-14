@@ -4,19 +4,22 @@ import json
 path_record_all = os.path.join(os.getcwd(), "results", "record")
 
 
-def get_set_done(begin, end):
+def get_set_done(lock, begin, end):
     is_Exist()
     s = set()
-    with open(path_record_all, "r", encoding="utf-8") as all:
-        table = json.loads(all.read())
-        for i in range(begin, end):
-            if table.get(str(i), False):
-                s.add(i)
+    lock.acquire()
+    try:
+        with open(path_record_all, "r", encoding="utf-8") as all:
+            table = json.loads(all.read())
+            for i in range(begin, end):
+                if table.get(str(i), False):
+                    s.add(i)
+    finally:
+        lock.release()
     return s
 
 
 def update_set_done(lock, num, done_set, mod=5):
-    is_Exist()
     done_set.add(num)
     if num % mod is 0:
         lock.acquire()
