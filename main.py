@@ -18,4 +18,4 @@ if __name__ == '__main__':
     for arg in arglist:
         process = Process(target=spider, args=arg)
         process.start()
-        time.sleep(30)
+        # time.sleep(30)

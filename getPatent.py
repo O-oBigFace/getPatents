@@ -47,7 +47,7 @@ def spider(lock, begin, end):
 
             tries = 0
             rep = None
-            while rep is None and tries <= 10:
+            while tries <= 10:
                 tries += 1
                 try:
                     rep = requests.post(url,
@@ -58,10 +58,11 @@ def spider(lock, begin, end):
                                         timeout=random.choice(range(80, 180)),
                                         verify=False
                                         )
+                    break
                 except Exception as e:
-                    rep = None
                     logger.error(
-                        "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + " | " + str(e))
+                        "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + " | " + str(e) + " | First")
+                    continue
 
             if rep is None:
                 continue
@@ -76,10 +77,10 @@ def spider(lock, begin, end):
                 js = None
                 tolerate -= 1
                 logger.error(
-                    "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + " | " +str(e))
-
+                    "No: " + str(num) + " | Subject: " + sub + " | Page: " + str(i) + " | " +str(e) + " | Second")
+                print(rep)
             if js is None:
-                tolerate -= 1
+                tolerate -= 4
                 continue
 
             publications = js['publicationResults']['publications']
