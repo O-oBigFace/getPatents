@@ -60,7 +60,7 @@ def spider(lock, begin, end):
                                         )
                 except Exception as e:
                     logger.error(
-                        "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + str(e))
+                        "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + " " + str(e))
             if rep is None:
                 continue
             rep.encoding = 'utf-8'
@@ -74,7 +74,7 @@ def spider(lock, begin, end):
                 js = None
                 tolerate -= 3
                 logger.error(
-                    "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + str(e))
+                    "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + " " +str(e))
 
             if js is None:
                 tolerate -= 2
