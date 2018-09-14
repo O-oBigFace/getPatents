@@ -53,7 +53,7 @@ def spider(lock, begin, end):
                                         timeout=random.choice(range(80, 180)),
                                         )
                 except Exception as e:
-                    print("No: ", num, "tries:", tries, "| Subject: ", sub, " | Page: ", i, e)
+                    print("No: ", num, " | tries:", tries, "| Subject: ", sub, " | Page: ", i, e)
 
             if rep is None:
                 continue
