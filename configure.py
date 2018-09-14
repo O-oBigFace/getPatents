@@ -1,6 +1,7 @@
 import random
 from ip_pool import agents
 
+
 def rand_header():
     return {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',

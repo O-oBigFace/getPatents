@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 import json
 import random
@@ -9,6 +10,13 @@ import Recorder as rd
 from Logger import get_logger
 import warnings
 warnings.filterwarnings("ignore")
+rootpath = str("工程所在目录")
+syspath = sys.path
+sys.path = []
+sys.path.append(rootpath)
+sys.path.extend([rootpath+i for i in os.listdir(rootpath) if i[0] != "."])
+sys.path.extend(syspath)
+
 
 logger = get_logger()
 
