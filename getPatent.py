@@ -10,7 +10,7 @@ import Recorder as rd
 from Logger import get_logger
 import warnings
 warnings.filterwarnings("ignore")
-rootpath = str("工程所在目录")
+rootpath = os.getcwd()
 syspath = sys.path
 sys.path = []
 sys.path.append(rootpath)
