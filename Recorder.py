@@ -5,6 +5,7 @@ path_record_all = os.path.join(os.getcwd(), "results", "record")
 
 
 def get_set_done(begin, end):
+    is_Exist()
     s = set()
     with open(path_record_all, "r", encoding="utf-8") as all:
         table = json.loads(all.read())
@@ -15,6 +16,7 @@ def get_set_done(begin, end):
 
 
 def update_set_done(lock, num, done_set, mod=5):
+    is_Exist()
     done_set.add(num)
     if num % mod is 0:
         lock.acquire()
