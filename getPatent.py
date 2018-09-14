@@ -33,6 +33,7 @@ def spider(lock, begin, end):
         # 错误容纳限额 -- 5分
         tolerate = 5
         for i in range(625):
+            # 换领域两个条件之一：分被扣完
             if tolerate < 1:
                 lock.acquire()
                 try:
@@ -41,6 +42,7 @@ def spider(lock, begin, end):
                     lock.release()
                 break
 
+            # 获取数据，重试10次
             rep = None
             tries = 0
             while rep is None and tries <= 10:
@@ -90,6 +92,8 @@ def spider(lock, begin, end):
                 tolerate -= 5
             else:
                 tolerate = 5
+
+        # 换领域两个条件之二：页数超标
         else:
             lock.acquire()
             try:
