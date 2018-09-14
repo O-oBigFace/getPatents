@@ -72,12 +72,12 @@ def spider(lock, begin, end):
                 js = json.loads(data)
             except Exception as e:
                 js = None
-                tolerate -= 3
+                tolerate -= 1
                 logger.error(
                     "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + " | " +str(e))
 
             if js is None:
-                tolerate -= 2
+                tolerate -= 1
                 continue
 
             publications = js['publicationResults']['publications']

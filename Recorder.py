@@ -1,6 +1,7 @@
 import os
 import json
 
+# 记录所有
 path_record_all = os.path.join(os.getcwd(), "results", "record")
 
 
@@ -58,6 +59,28 @@ def all_record():
         wf.write(json.dumps(a_record))
 
 
-if __name__ == '__main__':
-    all_record()
+def get_undone(begin, end):
+    count = 0
+    with open(path_record_all, "r", encoding="utf-8") as all:
+        table = json.loads(all.read())
+        for i in range(begin, end):
+            if not table.get(str(i), False):
+                count += 1
+    print(count)
 
+
+# 恢复record文件，需要将collect文件夹移动到项目中
+def recover():
+    with open(path_record_all, 'r', encoding="utf-8") as f:
+        all = json.loads(f.read())
+
+    for key, value in all.items():
+        if key not in os.listdir(os.path.join(os.getcwd(), "collect")):
+            all[key] = False
+    with open(path_record_all, 'w', encoding="utf-8") as f:
+        f.write(json.dumps(all))
+
+
+if __name__ == '__main__':
+    get_undone(1, 16157)
+    get_undone(1, 9001)
