@@ -45,8 +45,8 @@ def spider(lock, begin, end):
                     rd.update_set_done(lock, num, done_set=done_set, mod=5)
                 break
 
-            rep = None
             tries = 0
+            rep = None
             while rep is None and tries <= 10:
                 tries += 1
                 try:
@@ -59,8 +59,10 @@ def spider(lock, begin, end):
                                         verify=False
                                         )
                 except Exception as e:
+                    rep = None
                     logger.error(
                         "No: " + str(num) + " | tries:" + str(tries) + " | Subject: " + sub + " | Page: " + str(i) + " | " + str(e))
+
             if rep is None:
                 continue
             rep.encoding = 'utf-8'
