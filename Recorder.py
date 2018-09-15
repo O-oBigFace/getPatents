@@ -4,9 +4,9 @@ import json
 # 记录所有
 path_record_all = os.path.join(os.getcwd(), "results", "record")
 
-
+# 获得已经完成的文件列表
 def get_set_done(lock, begin, end):
-    is_Exist()
+    # is_Exist()
     s = set()
     lock.acquire()
     try:
@@ -43,7 +43,7 @@ def is_Exist():
 
 #  汇总所有record
 #  步骤：将左右的record文件放入record文件夹中，运行此函数
-def all_record():
+def merage_all_record():
     with open(os.path.join(os.getcwd(), 'results', "record"), 'r', encoding="utf-8") as rf:
         a_record = json.loads(rf.read())
 
@@ -58,7 +58,7 @@ def all_record():
     with open(os.path.join(os.getcwd(), 'results', "record"), 'w', encoding="utf-8") as wf:
         wf.write(json.dumps(a_record))
 
-
+# 手动运行函数
 def get_undone(begin, end):
     count = 0
     with open(path_record_all, "r", encoding="utf-8") as all:
@@ -69,7 +69,7 @@ def get_undone(begin, end):
     print(count)
 
 
-# 恢复record文件，需要将collect文件夹移动到项目中
+# 修复record文件，需要将collect文件夹移动到项目中
 def recover():
     with open(path_record_all, 'r', encoding="utf-8") as f:
         all = json.loads(f.read())
@@ -81,7 +81,19 @@ def recover():
         f.write(json.dumps(all))
 
 
+# 根据现有的数据备份record文件
+def backup():
+    with open(path_record_all, 'r', encoding="utf-8") as f:
+        all = json.loads(f.read())
+    for file_name in os.listdir(os.path.join(os.getcwd(), "results")):
+        if file_name == "record":
+            continue
+        with open(os.path.join(os.getcwd(), "results", file_name)) as fruit:
+            if len(fruit.read()) > 1:
+                all[file_name] = True
+    with open(path_record_all, 'w', encoding="utf-8") as f:
+        f.write(json.dumps(all))
+
+
 if __name__ == '__main__':
-    get_undone(1, 16157)
-    get_undone(1, 9001)
-    get_undone(9001, 14001)
+    backup()

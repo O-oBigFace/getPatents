@@ -7,9 +7,9 @@ def get_logger(level=logging.INFO):
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s: - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S')
-    # 使用FileHandler输出到文件
+    # 使用FileHandler输出到文件, 文件默认level:ERROR
     fh = logging.FileHandler('log')
-    fh.setLevel(logging.DEBUG)
+    fh.setLevel(logging.ERROR)
     fh.setFormatter(formatter)
     # 使用StreamHandler输出到屏幕
     ch = logging.StreamHandler()
@@ -18,3 +18,5 @@ def get_logger(level=logging.INFO):
     logger.addHandler(ch)
     logger.addHandler(fh)
     return logger
+
+# def parse_logger():
