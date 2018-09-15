@@ -4,6 +4,7 @@ import json
 # 记录所有
 path_record_all = os.path.join(os.getcwd(), "results", "record")
 
+
 # 获得已经完成的文件列表
 def get_set_done(lock, begin, end):
     # is_Exist()
@@ -93,7 +94,6 @@ def backup():
                 all[file_name] = True
     with open(path_record_all, 'w', encoding="utf-8") as f:
         f.write(json.dumps(all))
-
 
 if __name__ == '__main__':
     backup()

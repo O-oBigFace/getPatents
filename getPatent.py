@@ -7,9 +7,10 @@ import openpyxl
 from ip_pool.auto_pool import get_ip
 import Recorder as rd
 from Logger import get_logger
+import time
 import warnings
 warnings.filterwarnings("ignore")
-
+import logging
 logger = get_logger()
 
 
@@ -56,7 +57,7 @@ def spider(lock, begin, end):
             """
             tries = 0
             rep = None
-            while rep is not None and tries <= 10:
+            while rep is None and tries <= 10:
                 tries += 1
                 try:
                     # rep 为post对象
@@ -68,14 +69,17 @@ def spider(lock, begin, end):
                                         verify=False
                                         )
                     rep.encoding = 'utf-8'
-                    if len(rep.text) < 1:
+                    if rep.status_code in [200, 503]:
+                        break
+                    elif rep.status_code == 429:
+                        time.sleep(3)
                         continue
                 except Exception as e:
                     logger.error("No: %d | tries: %d | Subject: %s | Page: %d | %s | Net Error" %
                                  (num, tries, sub, i, str(e)))
 
             # 若重试10次以后仍有故障, 换主题
-            if rep is None or len(rep.text) < 1:
+            if rep is None:
                 tolerate -= 100
                 logger.error("No: %d | tries: %d | Subject: %s | Page: %d | MAX_TRY" %
                              (num, tries, sub, i))
@@ -92,6 +96,7 @@ def spider(lock, begin, end):
                 logger.error(
                     "No: %d | Subject: %s | Page: %d | %s | JSONParse Error" %
                     (num, sub, i, str(e)))
+
             if js is None:
                 tolerate -= 4
                 continue
