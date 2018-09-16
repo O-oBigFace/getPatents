@@ -11,7 +11,7 @@ import time
 import warnings
 warnings.filterwarnings("ignore")
 import logging
-logger = get_logger()
+logger = get_logger(logging.DEBUG)
 
 
 def spider(lock, begin, end):
@@ -103,7 +103,11 @@ def spider(lock, begin, end):
 
             publications = js['publicationResults']['publications']
             idx = 0
-            logger.info("No: %d | Subject: %s | Page: %d | Item: %d" % (num, sub, i, len(publications)))
+            if i is 0:
+                logger.info("No: %d | Subject: %s | Page: %d | Item: %d | Begin: %d | End: %d" % (num, sub, i, len(publications), begin, end))
+            else:
+                logger.info("No: %d | Subject: %s | Page: %d | Item: %d" % (num, sub, i, len(publications)))
+
 
             for item in publications:
                 idx = idx + 1
@@ -114,7 +118,7 @@ def spider(lock, begin, end):
                     f_res.write(restext)
 
             if len(publications) < 1:
-                tolerate -= 5
+                tolerate -= 6
             else:
                 tolerate = 5
 
@@ -122,4 +126,3 @@ def spider(lock, begin, end):
             # 切换主题条件之二：主题页面数目超过阈值
             rd.update_set_done(lock, num, done_set=done_set, mod=1)
 
-# if __name__ == '__main__':

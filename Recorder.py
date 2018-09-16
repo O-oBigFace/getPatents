@@ -7,7 +7,6 @@ path_record_all = os.path.join(os.getcwd(), "results", "record")
 
 # 获得已经完成的文件列表
 def get_set_done(lock, begin, end):
-    # is_Exist()
     s = set()
     lock.acquire()
     try:
@@ -59,6 +58,7 @@ def merage_all_record():
     with open(os.path.join(os.getcwd(), 'results', "record"), 'w', encoding="utf-8") as wf:
         wf.write(json.dumps(a_record))
 
+
 # 手动运行函数
 def get_undone(begin, end):
     count = 0
@@ -95,5 +95,6 @@ def backup():
     with open(path_record_all, 'w', encoding="utf-8") as f:
         f.write(json.dumps(all))
 
+
 if __name__ == '__main__':
-    backup()
+    get_undone(8820, 9001)
