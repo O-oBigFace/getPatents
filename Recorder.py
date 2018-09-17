@@ -1,5 +1,6 @@
 import os
 import json
+import pprint
 
 # 记录所有
 path_record_all = os.path.join(os.getcwd(), "results", "record")
@@ -95,6 +96,34 @@ def backup():
     with open(path_record_all, 'w', encoding="utf-8") as f:
         f.write(json.dumps(all))
 
+path_all = "M:\BEQUIET\workspace\python\RESULTS-PATENTS\collect"
+def get_num_none():
+    none_file = list()
+    for fname in os.listdir(path_all):
+        if not os.path.getsize(os.path.join(path_all, fname)):
+            none_file.append(int(fname))
+    return none_file
+
+
+def cut_list(l, n):
+    length = len(l)
+    if length < n:
+        raise Exception("The length of list should larger than n!")
+    if n < 2:
+        raise Exception("The n should larger than 1!")
+    quarter = length // n + 1
+    return [l[c * quarter: (c + 1) * quarter] for c in range(n - 1)] + [l[(n - 1) * quarter:]]
+
+
+# 做好备份
+def remove_none():
+    none_file = list()
+    for fname in os.listdir(path_all):
+        # 如果为空 删除之
+        if not os.path.getsize(os.path.join(path_all, fname)):
+            pass
+    return none_file
+
 
 if __name__ == '__main__':
-    get_undone(8820, 9001)
+    print(pprint.pformat(cut_list(get_num_none(), 5)))
